@@ -14,6 +14,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.persistence.EntityManager;
+import java.util.List;
 import java.util.Optional;
 
 @RunWith(SpringRunner.class)
@@ -60,7 +61,7 @@ public class RepositoryTests {
     }
 
     @Test
-    public void addComment(){
+    public void testAll(){
 
         product = new Product("One Plus");
         entityManager.persist(product);
@@ -77,6 +78,11 @@ public class RepositoryTests {
         Optional<Comment> dbComment = commentRepository.findById(comment.getId());
         Assert.assertEquals(dbComment.get().getComment(),"Never Settle");
 
+        List<Review> dbReviews = reviewRepository.findAllReviewsByProduct(product);
+        Assert.assertEquals(dbReviews.get(0).getReview(),"Very Fast");
+
+        List<Comment> dbComments = commentRepository.findAllCommentsByReview(review);
+        Assert.assertEquals(dbComments.get(0).getComment(), "Never Settle");
     }
 
 }
