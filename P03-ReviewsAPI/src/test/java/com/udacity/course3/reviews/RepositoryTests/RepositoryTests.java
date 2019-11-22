@@ -44,5 +44,39 @@ public class RepositoryTests {
         Assert.assertEquals(db_product.get().getProduct_name(),"One Plus");
     }
 
+    @Test
+    public void addReview(){
+        product = new Product("One Plus");
+        entityManager.persist(product);
+
+        review = new Review();
+        review.setProduct(product);
+        review.setReview("Very Fast");
+        entityManager.persist(review);
+
+        Optional<Review> dbReview = reviewRepository.findById(review.getId());
+        Assert.assertEquals(dbReview.get().getReview(),"Very Fast");
+
+    }
+
+    @Test
+    public void addComment(){
+
+        product = new Product("One Plus");
+        entityManager.persist(product);
+
+        review = new Review();
+        review.setProduct(product);
+        review.setReview("Very Fast");
+        entityManager.persist(review);
+
+        comment = new Comment();
+        comment.setReview(review);
+        comment.setComment("Never Settle");
+        entityManager.persist(comment);
+        Optional<Comment> dbComment = commentRepository.findById(comment.getId());
+        Assert.assertEquals(dbComment.get().getComment(),"Never Settle");
+
+    }
 
 }
