@@ -9,7 +9,7 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private String product_name;
+    private String productName;
 
     public Product() {
     }
@@ -18,13 +18,13 @@ public class Product {
         this.id = id;
     }
 
-    public Product(String product_name) {
-        this.product_name = product_name;
+    public Product(String productName) {
+        this.productName = productName;
     }
 
-    public Product(Integer id, String product_name) {
+    public Product(Integer id, String productName) {
         this.id = id;
-        this.product_name = product_name;
+        this.productName = productName;
     }
 
     public Integer getId() {
@@ -35,19 +35,19 @@ public class Product {
         this.id = id;
     }
 
-    public String getProduct_name() {
-        return product_name;
+    public String getProductName() {
+        return productName;
     }
 
-    public void setProduct_name(String product_name) {
-        this.product_name = product_name;
+    public void setProductName(String productName) {
+        this.productName = productName;
     }
 
     @Override
     public String toString() {
         return "Product{" +
                 "id=" + id +
-                ", product_name='" + product_name + '\'' +
+                ", product_name='" + productName + '\'' +
                 '}';
     }
 }

@@ -41,7 +41,7 @@ public class RepositoryTests {
         entityManager.persist(product);
 
         Optional<Product> db_product = productRepository.findById(product.getId());
-        Assert.assertEquals(db_product.get().getProduct_name(),"One Plus");
+        Assert.assertEquals(db_product.get().getProductName(),"One Plus");
     }
 
     @Test
