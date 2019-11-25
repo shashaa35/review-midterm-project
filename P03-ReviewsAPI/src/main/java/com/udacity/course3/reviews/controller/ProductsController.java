@@ -29,6 +29,8 @@ public class ProductsController {
     @RequestMapping(value = "/", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
     public void createProduct(Product product) {
+        System.out.println("creating product" +
+                "");
         productRepository.save(product);
     }
 

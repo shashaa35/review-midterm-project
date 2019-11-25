@@ -2,7 +2,9 @@ package com.udacity.course3.reviews.controller;
 
 import com.udacity.course3.reviews.entity.Product;
 import com.udacity.course3.reviews.entity.Review;
+import com.udacity.course3.reviews.entity.ReviewMongo;
 import com.udacity.course3.reviews.repository.ProductRepository;
+import com.udacity.course3.reviews.repository.ReviewMongoRepository;
 import com.udacity.course3.reviews.repository.ReviewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpServerErrorException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,11 +22,12 @@ import java.util.Optional;
 @RestController
 public class ReviewsController {
 
-    // TODO: Wire JPA repositories here
     @Autowired
     ProductRepository productRepository;
     @Autowired
     ReviewRepository reviewRepository;
+    @Autowired
+    ReviewMongoRepository reviewMongoRepository;
 
     /**
      * Creates a review for a product.
@@ -38,10 +42,13 @@ public class ReviewsController {
      */
     @RequestMapping(value = "/reviews/products/{productId}", method = RequestMethod.POST)
     public ResponseEntity<?> createReviewForProduct(@PathVariable("productId") Integer productId, @RequestBody Review review) {
+        System.out.println("Creating review");
         Optional<Product> product = productRepository.findById(productId);
         if(product.isPresent()){
+            System.out.println("product found");
             review.setProduct(product.get());
-            return ResponseEntity.ok(reviewRepository.save(review));
+            reviewRepository.save(review);
+            return ResponseEntity.ok(reviewMongoRepository.save(new ReviewMongo(review.getId(),review.getReview(),0)));
         }
         else {
             throw new HttpServerErrorException(HttpStatus.NOT_FOUND);
@@ -55,7 +62,19 @@ public class ReviewsController {
      * @return The list of reviews.
      */
     @RequestMapping(value = "/reviews/products/{productId}", method = RequestMethod.GET)
-    public ResponseEntity<List<Review>> listReviewsForProduct(@PathVariable("productId") Integer productId) {
-        return ResponseEntity.ok(reviewRepository.findAllReviewsByProduct(productRepository.findById(productId).get()));
+    public ResponseEntity<List<ReviewMongo>> listReviewsForProduct(@PathVariable("productId") Integer productId) {
+        if(productRepository.existsById(productId)){
+            List<Review> reviews = reviewRepository.findAllReviewsByProduct(productRepository.findById(productId).get());
+            List<Integer> reviewIds = new ArrayList<>();
+            for( Review rev : reviews){
+                reviewIds.add(rev.getId());
+            }
+            return ResponseEntity.ok((List<ReviewMongo>)reviewMongoRepository.findAllById(reviewIds));
+        }
+        else{
+            throw new HttpServerErrorException((HttpStatus.NOT_FOUND));
+        }
+
+
     }
 }
